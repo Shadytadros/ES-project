@@ -5,11 +5,11 @@ const authRoute = require('./routes/auth');
 const path = require('path');
 const uploadRoute = require('./routes/upload')
 require('dotenv').config();
-const User = require('./models/user');
-const Router = require('./routes/Router')
+const cors = require('cors')
 
 
 const app = express();
+app.use(cors())
 
 const port = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'build')));
@@ -20,10 +20,9 @@ mongoose.connect(process.env.DB, { useNewUrlParser: true })
 
 app.use(express.json());
 
-// app.use('/', authRoute);
-app.use('/upload', uploadRoute);
+app.use('/', authRoute);
+app.use('/', uploadRoute);
 
-new Router(app, User);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))

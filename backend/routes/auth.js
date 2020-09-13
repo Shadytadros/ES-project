@@ -27,17 +27,15 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-console.log('1')
+
   const user = await User.findOne({username: req.body.username})
-  if (!user) return res.status(400).send('invalid username');
+  if (!user) return res.status(404).send('invalid username');
   const validPass = await bcrypt.compare(req.body.password, user.password);
-  if (!validPass) return res.status(400).send('invalid password');
+  if (!validPass) return res.status(404).send('invalid password');
 
   const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
   res.header('auth-token', token).send(token);
 
-  res.send('logged in!');
-console.log('2')
   jsonPatch = [
     { op: "add", path: "/logedin", value: "yes" }
   ]
